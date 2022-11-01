@@ -1,21 +1,20 @@
 const express = require("express");
 
 const schemaValidate = require("../middlewares/schemaValidate");
-const { levelValidator } = require("../validationSchemas");
-const Level = require("../models/Level");
+const { schemaValidator } = require("../validationSchemas");
+const Schema = require("../models/Schema");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     let { search = "", perPage = 6, page = 1, sortOrder = -1 } = req.query;
     if (page === "") {
       page = 1;
     }
-    //console.log(req.user.username);
 
-    const levels = await Level.find(
+    const schemas = await Schema.find(
       {
         $and: [
           {
@@ -32,7 +31,7 @@ router.get("/", authMiddleware, async (req, res) => {
         skip: (Number(page) - 1) * Number(perPage),
       }
     );
-    const count = await Level.countDocuments({
+    const count = await Schema.countDocuments({
       title: {
         $regex: search,
         $options: "i",
@@ -40,7 +39,7 @@ router.get("/", authMiddleware, async (req, res) => {
     });
 
     res.json({
-      levels,
+      schemas,
       count: count,
       activePage: Number(page),
       perPage: Number(perPage),
@@ -52,39 +51,34 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.post(
-  "/",
-  schemaValidate(levelValidator.create),
-  authMiddleware,
-  async (req, res) => {
-    try {
-      const newLevel = await Level.create({
-        title: req.body.title,
-        cell_arr: req.body.cell_arr,
-        rows: req.body.rows,
-        cols: req.body.cols,
-        rating: req.body.rating,
-        creator: req.body.creator,
-      });
+router.post("/", schemaValidate(schemaValidator.create), async (req, res) => {
+  try {
+    const newSchema = await Schema.create({
+      title: req.body.title,
+      description: req.body.description,
+      cell_arr: req.body.cell_arr,
+      size: req.body.size,
+      rating: req.body.rating,
+      creator: req.body.creator,
+    });
 
-      res.status(201).json(newLevel);
-    } catch (error) {
-      console.log(error);
-      res.status(500).send(error);
-    }
+    res.status(201).json(newSchema);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
   }
-);
+});
 
 router.put("/:_id", authMiddleware, async (req, res) => {
   try {
-    const level = await Level.findById(req.params._id);
+    const schema = await Schema.findById(req.params._id);
 
-    if (level.creator !== req.user.username) {
+    if (schema.creator !== req.user.username) {
       res.status(403).json({ message: "Error 403" });
       return;
     }
 
-    const editedLevel = await Level.findByIdAndUpdate(
+    const editedSchema = await Schema.findByIdAndUpdate(
       req.params._id,
       req.body,
       {
@@ -92,7 +86,18 @@ router.put("/:_id", authMiddleware, async (req, res) => {
       }
     );
 
-    res.json({ editedLevel });
+    res.json({ editedSchema });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
+
+router.get("/:_id", async (req, res) => {
+  try {
+    const schema = await Schema.findById(req.params._id);
+
+    res.json({ schema });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);

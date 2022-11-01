@@ -20,8 +20,10 @@ router.post(
   schemaValidate(authValidator.create),
   async (req, res) => {
     try {
+      console.log("THIS:", req.body);
       const { email, username, password } = req.body;
       const candidate_username = await User.findOne({ username });
+
       const candidate_email = await User.findOne({ email });
       if (candidate_username || candidate_email) {
         return res.status(500).json({ message: "User is already registered!" });
@@ -29,9 +31,8 @@ router.post(
       const hashPassword = bcrypt.hashSync(password, 7);
       const user = new User({ email, username, password: hashPassword });
       await user.save();
-      res.json({
-        user,
-      });
+      const token = generateAccessToken(user._id, user.username);
+      return res.json({ token });
     } catch (error) {
       console.log(error);
       res.status(500).send(error);

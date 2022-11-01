@@ -1,8 +1,12 @@
 const { model, Schema } = require("mongoose");
 
-const Level = new Schema(
+const Schemaa = new Schema(
   {
     title: {
+      type: String,
+      required: true,
+    },
+    description: {
       type: String,
       required: true,
     },
@@ -10,11 +14,7 @@ const Level = new Schema(
       type: String,
       required: true,
     },
-    rows: {
-      type: Number,
-      required: true,
-    },
-    cols: {
+    size: {
       type: Number,
       required: true,
     },
@@ -31,4 +31,4 @@ const Level = new Schema(
   { timestamps: true }
 );
 
-module.exports = model("Level", Level);
+module.exports = model("Schema", Schemaa);

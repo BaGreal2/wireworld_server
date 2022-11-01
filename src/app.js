@@ -7,7 +7,7 @@ const passport = require("passport");
 const { ExtractJwt, Strategy } = require("passport-jwt");
 const { Server } = require("socket.io");
 
-const Level = require("./routes/Level");
+const Schema = require("./routes/Schema");
 const authRouter = require("./routes/authRouter");
 
 require("dotenv").config();
@@ -31,7 +31,7 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
-app.use("/levels", Level);
+app.use("/schemas", Schema);
 app.use("/auth", authRouter);
 
 app.get("/", (req, res) => {

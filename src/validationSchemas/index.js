@@ -1,4 +1,4 @@
 module.exports = {
-  levelValidator: require("./levelValidator"),
+  schemaValidator: require("./schemaValidator"),
   authValidator: require("./authValidator"),
 };
