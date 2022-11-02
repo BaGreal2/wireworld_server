@@ -3,8 +3,6 @@ const volleyball = require("volleyball");
 const helmet = require("helmet");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const passport = require("passport");
-const { ExtractJwt, Strategy } = require("passport-jwt");
 const { Server } = require("socket.io");
 
 const Schema = require("./routes/Schema");
@@ -33,9 +31,5 @@ app.use((req, res, next) => {
 });
 app.use("/schemas", Schema);
 app.use("/auth", authRouter);
-
-app.get("/", (req, res) => {
-  res.json({ message: "Hello, World!" });
-});
 
 module.exports = http;
