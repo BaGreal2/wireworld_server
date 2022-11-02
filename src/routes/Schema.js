@@ -104,4 +104,19 @@ router.get("/:_id", async (req, res) => {
   }
 });
 
+router.delete("/:_id", async (req, res) => {
+  try {
+    const schema = await Schema.findById(req.params._id);
+    if (schema.creator !== req.body.username) {
+      res.status(403).json({ message: "Can't delete not your post!" });
+      return;
+    }
+    await Schema.findByIdAndDelete(req.params._id);
+    res.json({ message: "Done" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+});
+
 module.exports = router;
