@@ -27,6 +27,11 @@ const Schemaa = new Schema(
       ref: "User",
       required: true,
     },
+    creatorName: {
+      type: String,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );

@@ -20,7 +20,6 @@ router.post(
   schemaValidate(authValidator.create),
   async (req, res) => {
     try {
-      console.log("THIS:", req.body);
       const { email, username, password } = req.body;
       const candidate_username = await User.findOne({ username });
 
@@ -32,7 +31,7 @@ router.post(
       const user = new User({ email, username, password: hashPassword });
       await user.save();
       const token = generateAccessToken(user._id, user.username);
-      return res.json({ token });
+      return res.json({ user, token });
     } catch (error) {
       console.log(error);
       res.status(500).send(error);
@@ -48,10 +47,10 @@ router.post("/login", async (req, res) => {
     }
     const validPassword = bcrypt.compareSync(password, user.password);
     if (!validPassword) {
-      return res.status(500).json({ message: `Wrong password!` });
+      return res.status(500).send({ message: `Wrong password!` });
     }
     const token = generateAccessToken(user._id, user.username);
-    return res.json({ token });
+    return res.json({ user, token });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);

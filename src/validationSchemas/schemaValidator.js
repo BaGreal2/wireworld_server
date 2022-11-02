@@ -7,4 +7,5 @@ exports.create = yup.object().shape({
   size: yup.number().required(),
   rating: yup.array().of(yup.number()).required(),
   creator: yup.string().required(),
+  creatorName: yup.string().required(),
 });

@@ -60,6 +60,7 @@ router.post("/", schemaValidate(schemaValidator.create), async (req, res) => {
       size: req.body.size,
       rating: req.body.rating,
       creator: req.body.creator,
+      creatorName: req.body.creatorName,
     });
 
     res.status(201).json(newSchema);
@@ -69,15 +70,8 @@ router.post("/", schemaValidate(schemaValidator.create), async (req, res) => {
   }
 });
 
-router.put("/:_id", authMiddleware, async (req, res) => {
+router.put("/:_id", async (req, res) => {
   try {
-    const schema = await Schema.findById(req.params._id);
-
-    if (schema.creator !== req.user.username) {
-      res.status(403).json({ message: "Error 403" });
-      return;
-    }
-
     const editedSchema = await Schema.findByIdAndUpdate(
       req.params._id,
       req.body,
@@ -85,7 +79,6 @@ router.put("/:_id", authMiddleware, async (req, res) => {
         new: true,
       }
     );
-
     res.json({ editedSchema });
   } catch (error) {
     console.log(error);
@@ -96,7 +89,6 @@ router.put("/:_id", authMiddleware, async (req, res) => {
 router.get("/:_id", async (req, res) => {
   try {
     const schema = await Schema.findById(req.params._id);
-
     res.json({ schema });
   } catch (error) {
     console.log(error);
@@ -107,7 +99,8 @@ router.get("/:_id", async (req, res) => {
 router.delete("/:_id", async (req, res) => {
   try {
     const schema = await Schema.findById(req.params._id);
-    if (schema.creator !== req.body.username) {
+    console.log(req.body.userId);
+    if (schema.creator !== req.body.userId) {
       res.status(403).json({ message: "Can't delete not your post!" });
       return;
     }
