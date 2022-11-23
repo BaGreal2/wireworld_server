@@ -35,6 +35,9 @@ const Schemaa = new Schema(
 			ref: 'User',
 			required: true,
 		},
+		userRated: {
+			type: [String],
+		},
 	},
 	{ timestamps: true }
 );

@@ -88,18 +88,42 @@ router.put('/:_id', async (req, res) => {
 		const editedSchema = await Schema.findByIdAndUpdate(
 			{ _id: req.params._id },
 			{
-				title: req.body.title,
-				description: req.body.description,
-				cell_arr: req.body.cell_arr,
-				size: req.body.size,
 				rating: req.body.rating,
 				ratingAvg:
 					req.body.rating.length > 0
 						? req.body.rating.reduce((a, b) => a + b, 0) /
 						  req.body.rating.length
 						: 0,
-				creator: req.body.creator,
-				creatorName: req.body.creatorName,
+				userRated:
+					req.body.userRated.length > 0
+						? [...req.body.userRated, req.body.userId]
+						: [req.body.userId],
+			},
+			{
+				new: true,
+			}
+		);
+		res.json({ editedSchema });
+	} catch (error) {
+		console.log(error);
+		res.status(500).send(error);
+	}
+});
+
+router.put('/retract/:_id', async (req, res) => {
+	try {
+		const editedSchema = await Schema.findByIdAndUpdate(
+			{ _id: req.params._id },
+			{
+				rating: req.body.rating,
+				ratingAvg:
+					req.body.rating.length > 0
+						? req.body.rating.reduce((a, b) => a + b, 0) /
+						  req.body.rating.length
+						: 0,
+				userRated: req.body.userRated.filter((elem) => {
+					return elem !== req.body.userId;
+				}),
 			},
 			{
 				new: true,
