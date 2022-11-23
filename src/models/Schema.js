@@ -36,7 +36,7 @@ const Schemaa = new Schema(
 			required: true,
 		},
 		userRated: {
-			type: [String],
+			type: [Object],
 		},
 	},
 	{ timestamps: true }

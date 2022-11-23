@@ -9,5 +9,10 @@ exports.create = yup.object().shape({
 	ratingAvg: yup.number(),
 	creator: yup.string().required(),
 	creatorName: yup.string().required(),
-	userRated: yup.array().of(yup.string()),
+	userRated: yup.array().of(
+		yup.object().shape({
+			userId: yup.string(),
+			userRate: yup.number(),
+		})
+	),
 });

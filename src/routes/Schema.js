@@ -96,8 +96,19 @@ router.put('/:_id', async (req, res) => {
 						: 0,
 				userRated:
 					req.body.userRated.length > 0
-						? [...req.body.userRated, req.body.userId]
-						: [req.body.userId],
+						? [
+								...req.body.userRated,
+								{
+									userId: req.body.userId,
+									userRate: req.body.rating[req.body.rating.length - 1],
+								},
+						  ]
+						: [
+								{
+									userId: req.body.userId,
+									userRate: req.body.rating[req.body.rating.length - 1],
+								},
+						  ],
 			},
 			{
 				new: true,
@@ -122,7 +133,7 @@ router.put('/retract/:_id', async (req, res) => {
 						  req.body.rating.length
 						: 0,
 				userRated: req.body.userRated.filter((elem) => {
-					return elem !== req.body.userId;
+					return elem.userId !== req.body.userId;
 				}),
 			},
 			{
