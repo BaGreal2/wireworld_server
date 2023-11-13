@@ -45,7 +45,7 @@ To get started with the WireWorld backend, follow these steps:
    ```bash
    npm isntall
    ```
-3. Setup the .env file with MongoDB and PORT
+3. Setup the .env file with MONGODB_URI, PORT and JWT_SECRET
 4. Run the server:
    ```bash
    npm start
